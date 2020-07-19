@@ -20,3 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('login', 'Auth\LoginController@apilogin');
 
 Route::get('pegawai', 'API\PegawaiController@index');
+Route::get('pegawai/{pegawai}', 'API\PegawaiController@show');
+Route::post('pegawai', 'API\PegawaiController@store');
+Route::put('pegawai/{pegawai}', 'API\PegawaiController@update');
+Route::delete('pegawai/{pegawai}', 'API\PegawaiController@destroy');

@@ -13,6 +13,11 @@ class PegawaiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     public function index()
     {
         //
@@ -82,6 +87,8 @@ class PegawaiController extends Controller
     public function show(Pegawai $pegawai)
     {
         //
+        $response = ['status' => 200, 'Pegawai' => $pegawai];
+        return response()->json($response);
     }
 
     /**
@@ -105,6 +112,41 @@ class PegawaiController extends Controller
     public function update(Request $request, Pegawai $pegawai)
     {
         //
+        $rules = [
+            'nama' => 'required',
+            'alamat' => 'required',
+            'jenis_kelamin' => 'required',
+            'tempat' => 'required',
+            'tanggal' => 'required',
+            'jabatan' => 'required',
+            'status_menikah' => 'required',
+            'agama' => 'required'
+        ];
+
+        $messages = [
+            'required' => 'Bidang :attribute tidak boleh kosong!',
+            'max' => 'File yang diunggah maksimal :max'
+        ];
+
+        
+        $this->validate($request,$rules,$messages);
+        $pegawai = Pegawai::findOrFail($pegawai->id);
+
+        $pegawai->update([
+
+            'user_id' => auth()->user()->id,
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'tempat' => $request->tempat,
+            'tanggal' => $request->tanggal,
+            'jabatan' => $request->jabatan,
+            'status_menikah' => $request->status_menikah,
+            'agama' => $request->agama
+        ]);
+
+        $response = ['status' => 200, 'pegawai' => $pegawai];
+        return response()->json($response);
     }
 
     /**
@@ -116,5 +158,10 @@ class PegawaiController extends Controller
     public function destroy(Pegawai $pegawai)
     {
         //
+        $terhapus = $pegawai;
+        $pegawai = Pegawai::findOrFail($pegawai->id);
+        $pegawai->delete();
+        $response = ['status' => 200, 'Terhapus' => $pegawai];
+        return response()->json($response);
     }
 }
